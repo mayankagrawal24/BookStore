@@ -18,8 +18,6 @@ const client = new Client ({
 //connection to database
 client.connect();
 
-
-
 //our endpoints and stuff
 data  = null
 console.log("Before")
