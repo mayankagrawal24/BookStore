@@ -1,18 +1,19 @@
 //setup backend
+require('dotenv').config()
 const express = require('express')
 const app = express()
-const port = 3000
 
 //connection to postgres database
 const {Client} = require('pg')
 
 //set up the connection to the database by specifying values
+console.log(process.env.PGHOST);
 const client = new Client ({
-    host: 'localhost', // server name or IP address;
-    port: 5432,
-    database: 'Univeristy_DB',
-    user: 'postgres',
-    password: 'password'
+    host: process.env.PGHOST,
+    port: process.env.PGPORT,
+    database: process.env.PGDATABASE,
+    user: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
 });
 
 //connection to database
@@ -38,6 +39,6 @@ app.get('/', (req, res) => {
   res.send(data)
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Example app listening at http://localhost:${process.env.PORT || 3000}`)
 })

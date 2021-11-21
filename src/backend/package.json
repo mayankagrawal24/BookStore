@@ -4,11 +4,13 @@
   "description": "HI",
   "main": "index.js",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "pg": "^8.7.1"
   },
   "devDependencies": {},
   "scripts": {
+    "start": "node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
