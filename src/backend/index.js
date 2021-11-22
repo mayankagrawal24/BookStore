@@ -41,11 +41,43 @@ app.get('/', (req, res) => {
 
 // ENDPOINTS BABY
 
-// user can search the bookstore by bookname, author name, ISBN, genre, etc. (extra marks wildcard title search)
+// -------- THIS IS CUSTOMER STUFF ----------------- //
+// user login (verifies username and password)
 
-// When a book is selected, information on the author(s), genre, publisher, number of pages, price, etc. can be viewed
+// POST user creation (creates a customer and adds data into Customer, BillingShipping, Address)
 
+// GET user can search the bookstore by bookname, author name, ISBN, genre, etc. (extra marks wildcard title search)
 
+// GET query a certain book based on isbn
+
+// POST add books to cart (involve generating an order)
+
+// UPDATE update order with billing shipping info
+
+// UPDATE add into the order a random tracking url when requested
+
+// GET check previous order reciepts (BONUS)
+
+// GET Stripe Portal for checkout (BONUS)
+
+// --------- THIS IS OWNER STUFF ----------------- //
+
+// POST endpoint to add book to Book (adds to the Book table, add multiple authors at the same time)
+// INSERT INTO BOOK(ISBN, title, genre, numPages,price, cost,stock,display ) VALUES($1, $2, $3, $4, $5,)
+
+// UPDATE endpoint to update quantity of a book (update book quantity)
+
+// POST endpoint to add a book to display (update book 'display' to true)
+
+// POST endpoint to remove a book from display (update book 'display' to false)
+
+// POST add publisher info, (adds to publisher table and phone table and address)
+
+// GET report generator -> for sales vs expenditures, sales per genres, sales per author.
+
+// SQL some trigger that checks if a book quantity is below 10 and orders 10 (this might have to be an sql trigger acc), trigger on CustomerOrder
+
+// POST Login stuff (use sessions maybe?) passport
 
 
 app.listen(process.env.PORT || 3000, () => {
