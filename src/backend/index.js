@@ -39,6 +39,15 @@ app.get('/', (req, res) => {
   res.send(data)
 })
 
+// ENDPOINTS BABY
+
+// user can search the bookstore by bookname, author name, ISBN, genre, etc. (extra marks wildcard title search)
+
+// When a book is selected, information on the author(s), genre, publisher, number of pages, price, etc. can be viewed
+
+
+
+
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT || 3000}`)
 })

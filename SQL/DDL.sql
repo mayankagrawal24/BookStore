@@ -2,106 +2,113 @@
 CREATE DATABASE BookStore;
 
 --Creating all of the tables in our database
-create table Customer (
-	customerID int NOT NULL AUTO_INCREMENT,
-	name varchar(64),
-	email varchar(64),
-	password varchar(64),
-	primary key (customerID),
-	foreign key (BSID) references BillingShipping on delete
-	set null
-);
-create table BillingShipping (
-	BSID int NOT NULL AUTO_INCREMENT,
-	creditCardName varchar(64),
-	creditCardNumber int(16),
-	primary key (BSID)
-	foreign key (billingAddressID) references Address
-	foreign key (shippingAddressID) references Address
-);
 
 create table Address(
-	addressID int NOT NULL AUTO_INCREMENT,
-	street varchar(64),
-	streetNumber int,
-	postalCode varchar(6),
-	province varchar(64),
-	country varchar(64)
-	primary key (addressID)
-)
+	addressID SERIAL PRIMARY KEY,
+	street varchar(64) NOT NULL,
+	streetNumber int NOT NULL,
+	postalCode varchar(6) NOT NULL,
+	province varchar(64) NOT NULL,
+	country varchar(64) NOT NULL
+);
+
+create table BillingShipping (
+	BSID SERIAL PRIMARY KEY,
+	creditCardName varchar(64) NOT NULL, 
+	creditCardNumber int NOT NULL,
+	cvv int NOT NULL,
+	expiry int NOT NULL,
+	billingAddressID int NOT NULL,
+	shippingAddressID int NOT NULL,
+	FOREIGN KEY (billingAddressID) references Address(addressID),
+	FOREIGN KEY (shippingAddressID) references Address(addressID)
+);
+
+create table Customer (
+	customerID SERIAL PRIMARY KEY,
+	name varchar(64) NOT NULL,
+	email varchar(64) NOT NULL,
+	password varchar(64) NOT NULL,
+	BSID int NOT NULL,
+	FOREIGN KEY (BSID) references BillingShipping 
+);
 create table Owner (
-	ownerID int NOT NULL AUTO_INCREMENT,
-	name varchar(64),
-	username varchar(64),
-	password varchar(64),
-	primary key (ownerID)
+	ownerID SERIAL PRIMARY KEY,
+	name varchar(64) NOT NULL,
+	username varchar(64) NOT NULL,
+	password varchar(64) NOT NULL
 );
 create table CustomerOrder (
-	customerOrderID int NOT NULL AUTO_INCREMENT,
+	customerOrderID SERIAL PRIMARY KEY,
 	trackingNumber varchar(64),
-	date Date,
+	date TIMESTAMPTZ DEFAULT Now(),
 	total int,
-	completed boolean,
-	primary key (customerID),
-	foreign key (BSID) 
-	references BillingShipping 
-	foreign key (customerID) 
-	references Customer
-);
-create table SoldBooks (
-	quantity int,
-	primary key (customerOrderID, ISBN) 
-	foreign key (customerOrderID) 
-	references CustomerOrder 
-	foreign key (ISBN) 
-	references Book
-);
-create table OrderedBooks (
-	quantity int,
-	primary key (orderID, ISBN) 
-	foreign key (orderID) 
-	references StoreOrder 
-	foreign key (ISBN) 
-	references Book
+	completed boolean DEFAULT FALSE,
+	BSID int,
+	customerID int,
+	FOREIGN KEY (BSID) references BillingShipping,
+	FOREIGN KEY (customerID) references Customer
 );
 create table Book (
+	ISBN int NOT NULL UNIQUE PRIMARY KEY,
+	title varchar(128) NOT NULL,
+	genre varchar(64) NOT NULL,
+	numPages int check (numPages > 0) NOT NULL,
+	price int NOT NULL,
+	cost int NOT NULL,
+	stock int DEFAULT 0,
+	display boolean DEFAULT TRUE
+);
+create table SoldBooks (
+	quantity int check(quantity > 0),
+	customerOrderID int,
 	ISBN int,
-	title varchar(128),
-	genre varchar(64),
-	numPages int,
-	price int,
-	stock int,
-	display boolean,
-	primary key (ISBN)
-);
-create table Author (
-	name varchar(64),
-	primary key (ISBN, name),
-	foreign key (ISBN) references Book
-);
-create table Makes (
-	primary key (ISBN, publisher_ID) 
-	foreign key (ISBN) references Book 
-	foreign key (publisherID) references Publisher
-);
-create table Publisher (
-	publisherID int NOT NULL AUTO_INCREMENT,
-	name varchar(),
-	email varchar(30),
-	bankingAccount varchar(30) 
-	foreign key (phoneNumber) references PhoneNumber on delete
-		set null
-	foreign key (addressID) references Address
-
-);
-create table PhoneNumber (
-	phoneNumber varchar(15),
-	publisherID primary key (phoneNumber, publisherID) 
-	foreign key (publisherID) references Publisher
+	PRIMARY KEY (ISBN, customerOrderID),
+	FOREIGN KEY (customerOrderID) references CustomerOrder,
+	FOREIGN KEY (ISBN) references Book
 );
 create table StoreOrder (
-	orderID int NOT NULL AUTO_INCREMENT,
-	date Date,
-	primary key (orderID) 
-	foreign key (ownerID) references Owner
+	orderID SERIAL PRIMARY KEY,
+	ownerID int,
+	date TIMESTAMPTZ DEFAULT Now(),
+	FOREIGN KEY (ownerID) references Owner
+);
+create table OrderedBooks (
+	quantity int check(quantity > 0),
+	orderID int,
+	ISBN int,
+	PRIMARY KEY(orderID,ISBN),
+	FOREIGN KEY (orderID) references StoreOrder, 
+	FOREIGN KEY (ISBN) references Book  
+);
+
+create table Author (
+	name varchar(64) NOT NULL,
+	ISBN int,
+	PRIMARY KEY(ISBN, name),
+	FOREIGN KEY (ISBN) references Book
+		on delete cascade
+);
+create table Publisher (
+	publisherID SERIAL PRIMARY KEY,
+	name varchar(64) NOT NULL,
+	email varchar(64) NOT NULL,
+	bankingAccount varchar(32),
+	addressID int,
+	FOREIGN KEY (addressID) references Address
+);
+create table Makes (
+	ISBN int,
+	publisherID int,
+	PRIMARY KEY(ISBN, publisherID),
+	FOREIGN KEY (ISBN) references Book,
+	FOREIGN KEY (publisherID) references Publisher
+);
+
+create table PhoneNumber (
+	phoneNumber varchar(16) NOT NULL,
+	publisherID int,
+	PRIMARY KEY(phoneNumber, publisherID),
+	FOREIGN KEY (publisherID) references Publisher
+		on delete cascade
 );
