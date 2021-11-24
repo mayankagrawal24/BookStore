@@ -1,0 +1,51 @@
+
+<h1>Title: <%= book.title %></h1>
+<h3>ISBN: <%= book.isbn %></h3>
+<h3>Genre: <%= book.genre %></h3>
+<h3>Author(s): <%= book.author_list %></h3>
+<h3>Pages: <%= book.numpages %></h3>
+<h3>Price: $<%= book.price /100 %></h3>
+<h3>Stock: <%= book.stock %></h3>
+<% if (userType == 'owner') { %>
+  <h3>Cost: $<%= book.cost /100 %></h3>
+  <h3>Display? <%= book.display %></h3>
+<% } %>
+
+<% if (userType == 'owner') { %>
+  <form method="post" action="/updateBookQuantity?isbn=<%= book.isbn %>">
+    <p>
+      <label>Edit Stock (Quantity):</label>
+      <input type="number" name="stock" />
+    </p>
+  
+    <p>
+      <input type="submit" value="Update Book Quantity" />
+    </p>
+  </form>
+  
+  <form method="post" action="/updateBookDisplay?isbn=<%= book.isbn %>">
+    <p>
+      <label>Edit Display in collection?:</label>
+      <input type="checkbox" name="display" <% if(book.display){ %>checked<% } %>/>
+    </p>
+    <p>
+      <input type="submit" value="Update Book Display" />
+    </p>
+  </form>
+<% } %>
+
+<% if (userType == 'customer') { %>
+  <form method="post" action="/addBookToCart">
+    <p>
+      <label>Quantity:</label> 
+      <input type="number" name="quantity"> 
+    </p>
+    <input type="hidden" name="ISBN" value=<%= book.isbn %>>
+    <p>
+      <input type="submit" value="Add Book to Cart" />
+    </p>
+  </form>
+<% } %>
+
+
+

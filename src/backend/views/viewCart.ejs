@@ -1,0 +1,39 @@
+<table>
+  Customer Cart
+  <tr>
+    <th>Title</th>
+    <th>ISBN</th>
+    <th>Genre</th>
+    <th>Pages</th>
+    <th>Price</th>
+    <th>Stock</th>
+    <% if (userType == 'owner') { %>
+      <th>Cost</th>
+      <th>Displayed?</th>
+    <% } %>
+  </tr>
+
+  <% for (var i = 0; i < books.length; i++) { %>
+  <tr>
+    <% if (userType == 'customer' && books[i].display == true) { %>
+      <td><a href="http://localhost:3000/book?isbn=<%= books[i].isbn %>"><%= books[i].title %></a></td>
+      <td><%= books[i].isbn %></td>
+      <td><%= books[i].genre %></td>
+      <td><%= books[i].numpages %></td>
+      <td>$<%= books[i].price /100 %></td>
+      <td><%= books[i].stock %></td> 
+    <% } %> 
+
+    <% if (userType == 'owner') { %>
+      <td><a href="http://localhost:3000/book?isbn=<%= books[i].isbn %>"><%= books[i].title %></a></td>
+      <td><%= books[i].isbn %></td>
+      <td><%= books[i].genre %></td>
+      <td><%= books[i].numpages %></td>
+      <td>$<%= books[i].price /100 %></td>
+      <td><%= books[i].stock %></td>
+      <td>$<%= books[i].cost /100 %></td>
+      <td><%= books[i].display %></td>
+    <% } %>
+  </tr>
+<% } %>
+</table>

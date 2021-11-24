@@ -1,0 +1,53 @@
+<form method="post" action="/createBook">
+  Create a book
+  <p>
+    <label>ISBN:</label>
+    <input type="text" name="ISBN" />
+  </p>
+
+  <p>
+    <label>Title:</label>
+    <input type="text" name="title" />
+  </p>
+  <br />
+  <p>
+    <label>Genre:</label>
+    <input type="text" name="genre" />
+  </p>
+  <p>
+    <label>Number of pages:</label>
+    <input type="number" name="numPages" />
+  </p>
+  <p>
+    <label>Price:</label>
+    <input type="number" name="price" step="0.01" />
+  </p>
+  <p>
+    <label>Cost to buy:</label>
+    <input type="number" name="cost" step="0.01" />
+  </p>
+  <p>
+    <label>Stock:</label>
+    <input type="number" name="stock" />
+  </p>
+  <p></p>
+  <p>
+    <label>Names of authors (seperate by comma):</label>
+    <input type="text" name="names" />
+  </p>
+
+  <select name='publisherList' id='publisher'>
+    <label>Publisher</label>
+    <% publishers.forEach(function(pub) { %>
+      <option value=<%= pub.publisherid %>> <%= pub.name %> </option>
+    <% }); %> 
+  </select>
+
+  <p>
+    <label>Display in collection?:</label>
+    <input type="checkbox" name="display" value="true" />
+  </p>
+  <p>
+    <input type="submit" value="Create Book in Store" />
+  </p>
+</form>

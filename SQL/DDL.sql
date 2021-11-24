@@ -35,7 +35,7 @@ create table Customer (
 create table Owner (
 	ownerID SERIAL PRIMARY KEY,
 	name varchar(64) NOT NULL,
-	username varchar(64) NOT NULL,
+	email varchar(64) NOT NULL,
 	password varchar(64) NOT NULL
 );
 create table CustomerOrder (

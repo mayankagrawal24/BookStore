@@ -1,0 +1,71 @@
+<h2>Search for Book</h2>
+<div role="search">
+    <input type="search" id="query" name="q"
+     placeholder="Search..."
+     aria-label="Search through site content">
+     <select id="category">
+        <option value="ISBN">ISBN</option>
+        <option value="title">Title</option>
+        <option value="genre">Genre</option>
+    </select>
+    <button id="search-btn">Search</button>
+    
+</div>
+<div id="results">
+
+</div>
+
+<script>
+    document.getElementById("search-btn").addEventListener("click", search);
+
+    function search() {
+        text = document.getElementById("query").value
+        category = document.getElementById("category").value
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                populate(xmlHttp.response);
+        }
+        document.getElementById("results").innerHTML = "Loading...";
+        xmlHttp.open("GET", `/searchBook?text=${text}&category=${category}`, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
+
+    function populate(results) {
+        resultDiv = document.getElementById("results")
+        if (results == "none") {
+            resultDiv.innerHTML = "";
+            var text = document.createElement("P").appendChild(document.createTextNode("No results found"))
+            resultDiv.appendChild(text)
+        } else {
+            results = JSON.parse(results)
+            table = `<table>
+                        <tr>
+                            <th>Title</th>
+                            <th>ISBN</th>
+                            <th>Genre</th>
+                            <th>Authors</th>
+                            <th>Pages</th>
+                            <th>Price</th>
+                        </tr>`
+            results.forEach(book => {
+
+                tr = `
+                <tr>
+                    <td><a href="http://localhost:3000/book?isbn=${book.isbn}">${book.title}</a></td>
+                    <td> ${book.isbn} </td>
+                    <td> ${book.genre} </td>
+                    <td> ${book.author_list} </td>
+                    <td> ${book.numpages} </td>
+                    <td> ${book.price/100} </td>
+                </tr> 
+                `
+                table += tr
+            });
+
+            table += '</table>'
+            resultDiv.innerHTML = table
+        }
+    }
+</script>

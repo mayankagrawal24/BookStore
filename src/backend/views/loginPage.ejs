@@ -1,0 +1,23 @@
+<head>
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+</head>
+
+<body>
+  <form method="post" action="/login">
+    <% if(req.error){ %>
+      <h1><%= req.error %></h1>
+    <% } %> 
+    <p>
+      <label for='emailAddress'>Email:</label>
+      <input type="text" name="username" placeholder="Enter email">
+    </p>
+
+    <p>
+      <label>Password:</label>
+      <input type="text" name="password">
+    </p>
+    <p>
+      <input type="submit" value="Login">
+    </p>
+  </form>
+</body>

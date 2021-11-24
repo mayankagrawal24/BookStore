@@ -4,13 +4,19 @@
   "description": "HI",
   "main": "index.js",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "bootstrap": "^3.4.1",
+    "connect-pg-simple": "^7.0.0",
     "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "path": "^0.12.7",
     "pg": "^8.7.1"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node ./index.js",
+    "start": "nodemon ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
