@@ -1,0 +1,26 @@
+<table>
+    Customer Cart
+    <tr>
+      <th>Title</th>
+      <th>ISBN</th>
+      <th>Genre</th>
+      <th>Pages</th>
+      <th>Price</th>
+      <th>Quantity</th>
+    </tr>
+  
+    <% for (var i = 0; i < books.length; i++) { %>
+    <tr id=<%= books[i].isbn %>>
+      <td><%= books[i].title %></td>
+      <td><%= books[i].isbn %></td>
+      <td><%= books[i].genre %></td>
+      <td><%= books[i].numpages %></td>
+      <td>$<%= books[i].price /100 %></td>
+      <td><%= books[i].stock %></td> 
+    </tr>
+    <% } %>
+    
+  </table>
+  
+  <p>Total: $<%= orderTotal  /100 %></p>
+  <p>PAY</p>

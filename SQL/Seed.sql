@@ -24,6 +24,7 @@ INSERT INTO BillingShipping(creditCardName, creditCardNumber, cvv, expiry, billi
 
 INSERT INTO Customer(name, email, password, BSID) VALUES('Bean Burrito', 'bean@gmail.com', 'bean', 1);
 INSERT INTO Customer(name, email, password, BSID) VALUES('Beat Meat', 'beat@gmail.com', 'beat', 2);
+INSERT INTO Customer(name, email, password, BSID) VALUES('Quick Tester', 'a', 'a', 2);
 
 INSERT INTO Owner (name, email, password) VALUES ('Owner Pwner', 'owner@gmail.com', 'owner');
 
@@ -77,15 +78,15 @@ insert into Makes (ISBN, publisherID) values (153822, 2);
 insert into PhoneNumber (phoneNumber, publisherID) values ('(123) 456-7890', 1);
 insert into PhoneNumber (phoneNumber, publisherID) values ('(124) 996-1190', 2);
 
-insert into Author (name, isbn) values ("Timothy Joe", 12345);
-insert into Author (name, isbn) values ("John Jimmies", 12345);
-insert into Author (name, isbn) values ("John Jimmies", 946983);
-insert into Author (name, isbn) values ("John Jimmies", 218993);
-insert into Author (name, isbn) values ("Tommy Jenkins", 82617);
-insert into Author (name, isbn) values ("Tommy Jenkins", 805414)
-insert into Author (name, isbn) values ("Tommy Jenkins", 253919)
-insert into Author (name, isbn) values ("Jimothy Jenkins", 539880)
-insert into Author (name, isbn) values ("Jimothy Jenkins", 456676)
-insert into Author (name, isbn) values ("Samantha Ploop", 456676)
+insert into Author (name, isbn) values ('Timothy Joe', 12345);
+insert into Author (name, isbn) values ('John Jimmies', 12345);
+insert into Author (name, isbn) values ('John Jimmies', 946983);
+insert into Author (name, isbn) values ('John Jimmies', 218993);
+insert into Author (name, isbn) values ('Tommy Jenkins', 82617);
+insert into Author (name, isbn) values ('Tommy Jenkins', 805414);
+insert into Author (name, isbn) values ('Tommy Jenkins', 253919);
+insert into Author (name, isbn) values ('Jimothy Jenkins', 539880);
+insert into Author (name, isbn) values ('Jimothy Jenkins', 456676);
+insert into Author (name, isbn) values ('Samantha Ploop', 456676);
 
 

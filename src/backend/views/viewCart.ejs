@@ -6,34 +6,69 @@
     <th>Genre</th>
     <th>Pages</th>
     <th>Price</th>
-    <th>Stock</th>
-    <% if (userType == 'owner') { %>
-      <th>Cost</th>
-      <th>Displayed?</th>
-    <% } %>
+    <th>Quantity</th>
   </tr>
 
   <% for (var i = 0; i < books.length; i++) { %>
-  <tr>
-    <% if (userType == 'customer' && books[i].display == true) { %>
-      <td><a href="http://localhost:3000/book?isbn=<%= books[i].isbn %>"><%= books[i].title %></a></td>
-      <td><%= books[i].isbn %></td>
-      <td><%= books[i].genre %></td>
-      <td><%= books[i].numpages %></td>
-      <td>$<%= books[i].price /100 %></td>
-      <td><%= books[i].stock %></td> 
-    <% } %> 
+  <tr id=<%= books[i].isbn %>>
+    <td>
+      <a href="http://localhost:3000/book?isbn=<%= books[i].isbn %>"
+        ><%= books[i].title %></a
+      >
+    </td>
+    <td><%= books[i].isbn %></td>
+    <td><%= books[i].genre %></td>
+    <td><%= books[i].numpages %></td>
+    <td>$<%= books[i].price /100 %></td>
+    <td><input type="number" class="quantityBox" min="1" max="<%= books[i].stock %>" value=<%= books[i].quantity %>></td>
+    <td><button id="updateBtn" onclick="updateQuantity('<%= books[i].isbn %>')">Update Quantity</button> </td>
+    
+    <td><button id="deleteBtn" onclick="deleteBook('<%= books[i].isbn %>')">Delete from Cart</button> </td>
+    <input type="hidden" class="customerOrderId" value='<%= books[i].customerorderid %>'>
 
-    <% if (userType == 'owner') { %>
-      <td><a href="http://localhost:3000/book?isbn=<%= books[i].isbn %>"><%= books[i].title %></a></td>
-      <td><%= books[i].isbn %></td>
-      <td><%= books[i].genre %></td>
-      <td><%= books[i].numpages %></td>
-      <td>$<%= books[i].price /100 %></td>
-      <td><%= books[i].stock %></td>
-      <td>$<%= books[i].cost /100 %></td>
-      <td><%= books[i].display %></td>
-    <% } %>
   </tr>
-<% } %>
+  <% } %>
+  
 </table>
+
+<p>Total: $<%= orderTotal  /100 %></p>
+<button><a href="/bsPage">Proceed to Checkout</a></button>
+
+<script>
+
+
+  function updateQuantity(isbn) {
+        quantity = document.getElementById(isbn).getElementsByClassName("quantityBox")[0].value
+        customerOrderId = document.getElementById(isbn).getElementsByClassName("customerOrderId")[0].value
+
+        console.log(quantity, customerOrderId)
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                // populate(xmlHttp.response);
+                // console.log(xmlHttp.response)
+                location.reload()
+                // window.location.href = "http://localhost:3000/viewCart";
+        }
+        xmlHttp.open("POST", `/editCartQuantity`, true); // true for asynchronous 
+        xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xmlHttp.send(`quantity=${quantity}&customerOrderID=${customerOrderId}&isbn=${isbn}`);
+    }
+
+    function deleteBook(isbn) {
+        customerOrderId = document.getElementById(isbn).getElementsByClassName("customerOrderId")[0].value
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                // populate(xmlHttp.response);
+                // console.log(xmlHttp.response)
+                location.reload()
+                // window.location.href = "http://localhost:3000/viewCart";
+        }
+        xmlHttp.open("POST", `/removeBookCart`, true); // true for asynchronous 
+        xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xmlHttp.send(`customerOrderID=${customerOrderId}&isbn=${isbn}`);
+    }
+</script>

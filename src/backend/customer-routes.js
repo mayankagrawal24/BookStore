@@ -162,11 +162,11 @@ module.exports = function (app, client) {
     }
     // get the customerOrderID
     customerOrderID = qe.rows[0].customerorderid;
-    console.log("CUSTOMER ORDER ID: ", customerOrderID)
+    console.log("CUSTOMER ORDER ID: ", customerOrderID);
 
     // insert into soldBooks table
     let { quantity, ISBN } = req.body;
-    console.log(quantity, ISBN)
+    console.log(quantity, ISBN);
     var text =
       "INSERT INTO SoldBooks(quantity, customerOrderID, ISBN) VALUES($1, $2, $3)";
     values = [quantity, customerOrderID, ISBN];
@@ -174,30 +174,74 @@ module.exports = function (app, client) {
       .query(text, values)
       .catch((e) => console.error(e.stack));
 
-    res.sendStatus(200);
+    res.redirect('/viewBooks');
   });
 
-  app.get("/viewCart", urlencodedParser, async function (req, res) {
-    let { customerID } = req.session.user;
+  // post edit quantity of books in cart books to cart
+  app.post("/editCartQuantity", urlencodedParser, async function (req, res) {
+    // insert into soldBooks table
+    console.log("Editing", req.body);
+    let { quantity, customerOrderID, isbn } = req.body;
     var text =
-      "SELECT * From CustomerOrder NATURAL JOIN SoldBooks NATURAL JOIN Customer WHERE customerID = $1 AND completed = 'FALSE'";
-    
-    values = [customerID];
+      "UPDATE SoldBooks SET quantity = $1 WHERE isbn = $2 and customerOrderID = $3";
+    values = [parseInt(quantity), parseInt(isbn), parseInt(customerOrderID)];
+    console.log(values);
     var qe = await client
       .query(text, values)
       .catch((e) => console.error(e.stack));
 
+    res.redirect("/viewCart");
+  });
+
+  // POST remove book from cart
+  app.post("/removeBookCart", urlencodedParser, async function (req, res) {
+    // insert into soldBooks table
+    console.log("DEFEFKEFKF")
+    let { customerOrderID, isbn } = req.body;
+    var text =
+      "DELETE from SoldBooks where customerOrderId = $1 and isbn = $2";
+    values = [parseInt(customerOrderID), parseInt(isbn)];
+    var qe = await client
+      .query(text, values)
+      .catch((e) => console.error(e.stack));
+
+    res.redirect("/viewCart");
+  });
+
+  app.get("/viewCart", async function (req, res) {
     userType = req.session?.user ? req.session.user.type : "unauthorized";
     if (userType == "unauthorized") {
       res.redirect("/");
-    } else {
-      res.render("viewBooks.ejs", { books: qe.rows, userType: userType });
     }
+    //console.log("CHECK");
+    //console.log(req.session.user);
+    let { customerID } = req.session.user;
+    var text =
+      "SELECT * From CustomerOrder natural join SoldBooks natural join Book inner join customer on (CustomerOrder.customerId = Customer.customerId) where customer.customerid = $1 and completed = $2";
+
+    values = [customerID, false];
+    var qe = await client
+      .query(text, values)
+      .catch((e) => console.error(e.stack));
+
+    // get order total
+    let orderTotal = 0;
+    qe.rows.forEach((book, i) => {
+      orderTotal += book.quantity * book.price;
+    });
+
+    res.render("viewCart.ejs", {
+      books: qe.rows,
+      userType: userType,
+      orderTotal: orderTotal,
+    });
   });
 
   // PUT update order with billing shipping info (first create the entry in BillingShipping, need to check here if they want to use the data already in customer)
-  app.put("/addBSToOrder", urlencodedParser, async function (req, res) {
+  app.post("/addBSToOrder", urlencodedParser, async function (req, res) {
     var BSID;
+    // useCustomerBS = (req.body.billingShipping=="own")
+
 
     // first check if the user wants to use customer attached billingShipping info
     let { useCustomerBS, customerID } = req.body;
@@ -270,11 +314,24 @@ module.exports = function (app, client) {
 
     // update the order with the billing shipping info
     let { customerOrderID } = req.body;
-    text = "UPDATE CustomerOrder SET BSID = $1 WHERE customerOrderID = $2";
+    text = "UPDATE CustomerOrder SET BSID = $1 AND COMPLETED WHERE customerOrderID = $2";
     values = [BSID, customerOrderID];
     qe = await client.query(text, values).catch((e) => console.error(e.stack));
 
-    res.sendStatus(200);
+    res.redirect("/checkout");
+  });
+
+  // post request to finalize a customer order (sets completed to true)
+  app.post("/finalizeCustomerOrder", urlencodedParser, async function (req, res) {
+    let { customerOrderID } = req.body;
+    var text =
+      "UPDATE CustomerOrder completed = $1 where customerOrderID = $2";
+    values = [true, parseInt(customerOrderID)];
+    var qe = await client
+      .query(text, values)
+      .catch((e) => console.error(e.stack));
+
+    res.redirect("Pranked.com");
   });
 
   // PUT add into the order a random tracking url when requested
@@ -348,4 +405,43 @@ module.exports = function (app, client) {
       res.sendStatus(404);
     }
   });
+
+  app.get("/bsPage", urlencodedParser, async function (req, res) {
+    userType = req.session?.user ? req.session.user.type : "unauthorized";
+    if (userType == "unauthorized") {
+      res.redirect("/");
+    }
+    res.render("bsPage.ejs");
+  });
+
+  app.get("/checkout", urlencodedParser, async function (req, res) {
+    userType = req.session?.user ? req.session.user.type : "unauthorized";
+    if (userType == "unauthorized") {
+      res.redirect("/");
+    }
+
+    let { customerID } = req.session.user;
+    var text =
+      "SELECT * From CustomerOrder natural join SoldBooks natural join Book inner join customer on (CustomerOrder.customerId = Customer.customerId) where customer.customerid = $1 and completed = $2";
+
+    values = [customerID, false];
+    var qe = await client
+      .query(text, values)
+      .catch((e) => console.error(e.stack));
+
+    // get order total
+    let orderTotal = 0;
+    qe.rows.forEach((book, i) => {
+      orderTotal += book.quantity * book.price;
+    });
+
+    res.render("checkout.ejs", {
+      books: qe.rows,
+      userType: userType,
+      orderTotal: orderTotal,
+    });
+  });
 };
+
+
+

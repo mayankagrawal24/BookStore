@@ -146,4 +146,8 @@ module.exports = function (app, client) {
     });
     res.sendStatus(200);
   });
+
+  app.post("/createStoreOrder", urlencodedParser, async function (req, res) {
+    
+  });
 };

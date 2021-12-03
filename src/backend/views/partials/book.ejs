@@ -38,7 +38,7 @@
   <form method="post" action="/addBookToCart">
     <p>
       <label>Quantity:</label> 
-      <input type="number" name="quantity"> 
+      <input type="number" min="1" max="<%= book.stock %>" name="quantity"> 
     </p>
     <input type="hidden" name="ISBN" value=<%= book.isbn %>>
     <p>

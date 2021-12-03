@@ -1,0 +1,85 @@
+<form action="/addBSToOrder" method="post">
+  <input type="radio" name="billingShipping" value="new" onchange="hideForm()" checked/>Use my billing shipping info</br>
+    <input type="radio" name="billingShipping" value="own" onchange="showForm()"/>Use new billing shipping
+    
+    <div id="bs-form" style="display: none;">
+        <br />
+        Billing
+        <p>
+        <label>Credit Card Name:</label>
+        <input type="text" name="ccName" />
+        </p>
+        <p>
+        <label>Credit Card Number:</label>
+        <input type="number" name="ccNumber" />
+        </p>
+        <p>
+        <label>Credit Card CCV:</label>
+        <input type="number" name="ccCcv" />
+        </p>
+        <p>
+        <label>Credit Card Expiry:</label>
+        <input type="number" name="ccExpiry" />
+        </p>
+        <br />
+        Billing Address
+        <p>
+        <label>Street Name:</label>
+        <input type="text" name="bStreet" />
+        </p>
+        <p>
+        <label>Street Number:</label>
+        <input type="number" name="bStreetNumber" />
+        </p>
+        <p>
+        <label>Postal Code:</label>
+        <input type="text" name="bPostalCode" />
+        </p>
+        <p>
+        <label>Province:</label>
+        <input type="text" name="bProvince" />
+        </p>
+        <p>
+        <label>Country:</label>
+        <input type="text" name="bCountry" />
+        </p>
+        <br />
+        Shipping Address
+        <p>
+        <label>Street Name:</label>
+        <input type="text" name="sStreet" />
+        </p>
+        <p>
+        <label>Street Number:</label>
+        <input type="number" name="sStreetNumber" />
+        </p>
+        <p>
+        <label>Postal Code:</label>
+        <input type="text" name="sPostalCode" />
+        </p>
+        <p>
+        <label>Province:</label>
+        <input type="text" name="sProvince" />
+        </p>
+        <p>
+        <label>Country:</label>
+        <input type="text" name="sCountry" />
+        </p>
+        <br />
+        <p>
+        
+        </p>
+    </div>
+    </br>
+    <input type="submit" value="Proceed" />
+    
+</form>
+
+<script>
+    function showForm() {
+        document.getElementById("bs-form").style.display = "block";
+    }
+    function hideForm() {
+        document.getElementById("bs-form").style.display = "none";
+    }
+</script>
