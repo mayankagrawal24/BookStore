@@ -1,6 +1,6 @@
 <form action="/addBSToOrder" method="post">
-  <input type="radio" name="billingShipping" value="new" onchange="hideForm()" checked/>Use my billing shipping info</br>
-    <input type="radio" name="billingShipping" value="own" onchange="showForm()"/>Use new billing shipping
+    <input type="radio" name="billingShipping" value="old" onchange="hideForm()" checked/>Use my billing shipping info</br>
+    <input type="radio" name="billingShipping" value="new" onchange="showForm()"/>Use new billing shipping
     
     <div id="bs-form" style="display: none;">
         <br />
@@ -72,6 +72,7 @@
     </div>
     </br>
     <input type="submit" value="Proceed" />
+    
     
 </form>
 

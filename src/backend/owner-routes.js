@@ -80,7 +80,7 @@ module.exports = function (app, client) {
       .query(text, values)
       .catch((e) => console.error(e.stack));
 
-      res.redirect(`http://localhost:3000/book?isbn=${isbn}`);
+    res.redirect(`http://localhost:3000/book?isbn=${isbn}`);
   });
 
   // POST endpoint to set a book display option (update book 'display' to true)
@@ -147,7 +147,44 @@ module.exports = function (app, client) {
     res.sendStatus(200);
   });
 
-  app.post("/createStoreOrder", urlencodedParser, async function (req, res) {
+  //post endpoint to put in an order for a book
+  app.post("/orderBook", urlencodedParser, async function (req, res) {
+    //update the book quantity
+    console.log("IN Order Quantity", req.query);
+    let stockOrder  = req.body.stockOrder;
+    let { isbn } = req.query;
+
+    console.log(stockOrder)
+    console.log(isbn)
+    console.log(req.session.user)
+    ownerID = req.session.user.ownerID
+    console.log("end")
+
+    text = "INSERT into StoreOrder(ownerID) VALUES($1) RETURNING orderid";
+    values = [ownerID];
+    qe = await client
+    .query(text, values)
+    .catch((e) => console.error(e.stack));
+
+    orderID = qe.rows[0].orderid;
+    console.log("Store ORDER ID: ", orderID);
+
+    var text = 
+    "INSERT INTO orderedBooks(quantity, orderID, ISBN) VALUES($1, $2, $3)";
+    values = [stockOrder, orderID, isbn];
+    var qe = await client
+    .query(text, values)
+    .catch((e) => console.error(e.stack));
+
+    // var text = "INSERT into StoreOrder(ownerID) VALUES($1)";
+    // values = [ownerID];
+    // var qe = await client
+    //   .query(text, values)
+    //   .catch((e) => console.error(e.stack));
+
+    console.log("done")
+
+    res.redirect(`http://localhost:3000/book?isbn=${isbn}`);
     
   });
 };

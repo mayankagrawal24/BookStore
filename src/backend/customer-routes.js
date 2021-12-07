@@ -25,7 +25,7 @@ module.exports = function (app, client) {
 
     var customer = await client.query(customer_query, values);
     var owner = await client.query(owner_query, values);
-    console.log("owner", owner);
+    //console.log("owner", owner);
     if (owner.rows.length) {
       data = owner.rows[0];
       if (
@@ -35,6 +35,7 @@ module.exports = function (app, client) {
         user = {
           email: data.email,
           name: data.name,
+          ownerID: data.ownerid,
           type: "owner",
         };
         req.session.user = user;
@@ -174,7 +175,7 @@ module.exports = function (app, client) {
       .query(text, values)
       .catch((e) => console.error(e.stack));
 
-    res.redirect('/viewBooks');
+    res.redirect("/viewBooks");
   });
 
   // post edit quantity of books in cart books to cart
@@ -196,10 +197,8 @@ module.exports = function (app, client) {
   // POST remove book from cart
   app.post("/removeBookCart", urlencodedParser, async function (req, res) {
     // insert into soldBooks table
-    console.log("DEFEFKEFKF")
     let { customerOrderID, isbn } = req.body;
-    var text =
-      "DELETE from SoldBooks where customerOrderId = $1 and isbn = $2";
+    var text = "DELETE from SoldBooks where customerOrderId = $1 and isbn = $2";
     values = [parseInt(customerOrderID), parseInt(isbn)];
     var qe = await client
       .query(text, values)
@@ -212,9 +211,12 @@ module.exports = function (app, client) {
     userType = req.session?.user ? req.session.user.type : "unauthorized";
     if (userType == "unauthorized") {
       res.redirect("/");
+    } else if (userType == "owner") {
+      backURL = req.header("Referer") || "/";
+      res.redirect(backURL);
     }
     //console.log("CHECK");
-    //console.log(req.session.user);
+    console.log(req.session);
     let { customerID } = req.session.user;
     var text =
       "SELECT * From CustomerOrder natural join SoldBooks natural join Book inner join customer on (CustomerOrder.customerId = Customer.customerId) where customer.customerid = $1 and completed = $2";
@@ -239,12 +241,30 @@ module.exports = function (app, client) {
 
   // PUT update order with billing shipping info (first create the entry in BillingShipping, need to check here if they want to use the data already in customer)
   app.post("/addBSToOrder", urlencodedParser, async function (req, res) {
+    console.log("IN /addBSToOrder");
+    userType = req.session?.user ? req.session.user.type : "unauthorized";
+    if (userType == "unauthorized") {
+      res.redirect("/");
+    }
     var BSID;
-    // useCustomerBS = (req.body.billingShipping=="own")
+    let useCustomerBS = req.body.billingShipping == "old" ? true : false;
+    let customerID = req.session.user.customerID;
 
+    //get the customerOrderID
+    var text =
+      "SELECT * FROM CustomerOrder WHERE customerID = $1 AND completed = $2";
+    values = [customerID, false];
+    var qe = await client
+      .query(text, values)
+      .catch((e) => console.error(e.stack));
+
+    customerOrderID = qe.rows[0].customerorderid;
+    console.log("THIS IS QE", qe);
+    console.log("THIS IS CUSTOMER ORDER ID", customerOrderID);
 
     // first check if the user wants to use customer attached billingShipping info
-    let { useCustomerBS, customerID } = req.body;
+    console.log(req.body);
+    //let { useCustomerBS, customerID } = req.body;
 
     // if they dont want to use the saved details
     if (!useCustomerBS) {
@@ -309,30 +329,56 @@ module.exports = function (app, client) {
         .query(text, values)
         .catch((e) => console.error(e.stack));
 
+      console.log("THIS IS BSID QUERY", qe);
       BSID = qe.rows[0].bsid;
     }
 
+    // create tracking number
+    const allCharacters =
+      "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let trackingNum = " ";
+    for (let i = 0; i < 10; i++) {
+      trackingNum += allCharacters.charAt(Math.floor(Math.random() * 10));
+    }
+
+    // get the order total
+    var text =
+      "SELECT * From CustomerOrder natural join SoldBooks natural join Book inner join customer on (CustomerOrder.customerId = Customer.customerId) where customer.customerid = $1 and completed = $2";
+    values = [customerID, false];
+    var qe = await client
+      .query(text, values)
+      .catch((e) => console.error(e.stack));
+    let orderTotal = 0;
+    qe.rows.forEach((book, i) => {
+      orderTotal += book.quantity * book.price;
+    });
+
     // update the order with the billing shipping info
-    let { customerOrderID } = req.body;
-    text = "UPDATE CustomerOrder SET BSID = $1 AND COMPLETED WHERE customerOrderID = $2";
-    values = [BSID, customerOrderID];
+    text =
+      "UPDATE CustomerOrder SET BSID = $1, trackingNumber = $2, COMPLETED = $3, total = $4 WHERE customerOrderID = $5";
+    values = [parseInt(BSID), trackingNum, true, orderTotal, customerOrderID];
+    console.log("THIS IS VALUES", values);
     qe = await client.query(text, values).catch((e) => console.error(e.stack));
 
     res.redirect("/checkout");
   });
 
   // post request to finalize a customer order (sets completed to true)
-  app.post("/finalizeCustomerOrder", urlencodedParser, async function (req, res) {
-    let { customerOrderID } = req.body;
-    var text =
-      "UPDATE CustomerOrder completed = $1 where customerOrderID = $2";
-    values = [true, parseInt(customerOrderID)];
-    var qe = await client
-      .query(text, values)
-      .catch((e) => console.error(e.stack));
+  app.post(
+    "/finalizeCustomerOrder",
+    urlencodedParser,
+    async function (req, res) {
+      let { customerOrderID } = req.body;
+      var text =
+        "UPDATE CustomerOrder completed = $1 where customerOrderID = $2";
+      values = [true, parseInt(customerOrderID)];
+      var qe = await client
+        .query(text, values)
+        .catch((e) => console.error(e.stack));
 
-    res.redirect("Pranked.com");
-  });
+      res.redirect("Pranked.com");
+    }
+  );
 
   // PUT add into the order a random tracking url when requested
   app.put("/setTrackingNumber", urlencodedParser, async function (req, res) {
@@ -442,6 +488,3 @@ module.exports = function (app, client) {
     });
   });
 };
-
-
-

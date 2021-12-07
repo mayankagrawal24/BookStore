@@ -1,3 +1,10 @@
+<% if (userType == "customer") { %>
+  <%- include('customerNav.ejs') %>
+<% } else { %>
+  <%- include('ownerNav.ejs') %>
+<% } %>
+</br>
+
 
 <h1>Title: <%= book.title %></h1>
 <h3>ISBN: <%= book.isbn %></h3>
@@ -30,6 +37,17 @@
     </p>
     <p>
       <input type="submit" value="Update Book Display" />
+    </p>
+  </form>
+
+  <form method="post" action="/orderBook?isbn=<%= book.isbn %>">
+    <p>
+      <label>Order Stock (Quantity):</label>
+      <input type="number" name="stockOrder" />
+    </p>
+  
+    <p>
+      <input type="submit" value="Order Book"/>
     </p>
   </form>
 <% } %>

@@ -1,3 +1,11 @@
+<% if (userType == "customer") { %>
+  <%- include('partials/customerNav.ejs') %>
+<% } else { %>
+  <%- include('partials/ownerNav.ejs') %>
+<% } %>
+</br>
+
+
 <table>
   <tr>
     <th>Title</th>

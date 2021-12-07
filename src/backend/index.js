@@ -56,7 +56,12 @@ app.use("/js", express.static(path.join(_dirname, "node_modules/jquery/dist")));
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 
-app.get("/login", (req, res) => {
+app.get("/login", urlencodedParser, (req, res) => {
+  if (req.session?.user) {
+    res.redirect("/");
+    return;
+  }
+
   res.render("loginPage.ejs", { req });
 });
 

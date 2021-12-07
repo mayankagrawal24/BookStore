@@ -1,7 +1,17 @@
-<a href="http://localhost:3000/viewBooks">View All Books</a>
-<a href="http://localhost:3000/viewCart">View Cart</a>
-<a href="http://localhost:3000/viewPreviousOrders">View Previous Orders</a>
+<ul style= "list-style-type: none;
+            margin: 0;
+            padding: 0;
+            
+">
+    <li><a href="http://localhost:3000/">Home</a></li>
+    <li><a href="http://localhost:3000/viewBooks">View All Books</a></li>
+    <li><a href="http://localhost:3000/viewCart">View Cart</a></li>
+    <li><a href="http://localhost:3000/viewPreviousOrders">View Previous Orders</a></li>
+    <li>
+        <form method="post" action="/logout">
+            <p> <input type="submit" value="Logout"> </p>
+        </form>
+    </li>
+</ul>
 
-<form method="post" action="/logout">
-    <p> <input type="submit" value="Logout"> </p>
-</form>
+

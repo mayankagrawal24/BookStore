@@ -1,7 +1,8 @@
-<h1> HI I AM THE FUCKING CUSTOMER</h1>
-
-<p> <%= req.session ? req.session.username  : none%> </p>
-
 <%- include('partials/customerNav.ejs') %>
+</br>
+
+<h3> Welcome <b><%= req.session ? req.session.user.name  : none%></b> </h3>
+
+
 
 <%- include('partials/search.ejs') %>
