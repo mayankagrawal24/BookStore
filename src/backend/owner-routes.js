@@ -176,15 +176,56 @@ module.exports = function (app, client) {
     .query(text, values)
     .catch((e) => console.error(e.stack));
 
-    // var text = "INSERT into StoreOrder(ownerID) VALUES($1)";
-    // values = [ownerID];
-    // var qe = await client
-    //   .query(text, values)
-    //   .catch((e) => console.error(e.stack));
-
     console.log("done")
 
     res.redirect(`http://localhost:3000/book?isbn=${isbn}`);
     
+  });
+
+  //post endpoint to put in an order for a book
+  app.post("/report", urlencodedParser, async function (req, res) {
+
+    let reportType = req.body.type;
+    let startDate = req.body.date_start;
+    let endDate = req.body.date_end;
+
+    console.log(startDate, endDate)
+
+    text = ""
+
+    switch (reportType) {
+      case 'Book':
+        text = 
+            "SELECT isbn, title, sum(quantity) as qty, quantity * price as total FROM OrdersView GROUP BY isbn, title, total";
+        break;
+
+      case 'Author':
+        text = 
+            "SELECT name, sum(quantity) as qty, quantity * price as total FROM OrdersView GROUP BY name, total";
+        break;
+
+      case 'Genre':
+        text = 
+            "SELECT genre, sum(quantity) as qty, quantity * price as total FROM OrdersView GROUP BY genre, total";
+        break;
+
+      default:
+        text = 
+            "SELECT isbn, title, sum(quantity) as qty, quantity * price as total FROM OrdersView GROUP BY isbn, title, total";
+        break;
+    } 
+
+    var qe = await client
+    .query(text)
+    .catch((e) => console.error(e.stack));
+  
+    console.log(qe?.rows);
+
+    if (qe.rows.length) {
+      qe.rows[0]['reportType'] = reportType
+    }
+    
+    res.render("ownerHome.ejs", { req, report: qe?.rows });
+
   });
 };

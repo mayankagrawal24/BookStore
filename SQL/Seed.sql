@@ -30,23 +30,23 @@ INSERT INTO Owner (name, email, password) VALUES ('Owner Pwner', 'owner@gmail.co
 
 INSERT INTO Book (ISBN, title, genre, numPages, price, cost, stock, display) VALUES (12345, 'To Kill A Bean', 'Action', 100, 1000, 500, 15, TRUE);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (946983, 'Pumping Iron', 'Documentary', 2573, 7852, 955, 465, true);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (218993, 'Death Defying Acts', 'Drama|Romance|Thriller', 4500, 8490, 344, 901, false);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (82617, 'Gunbuster (Top wo Narae)', 'Action|Animation|Drama|Sci-Fi', 613, 7413, 487, 641, true);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (805414, 'Rain or Shine', 'Comedy|Drama|Romance', 2777, 5647, 449, 459, true);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (253919, 'Allegro non troppo', 'Animation|Comedy|Fantasy|Musical', 5431, 4291, 744, 530, true);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (218993, 'Death Defying Acts', 'Thriller', 4500, 8490, 344, 901, false);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (82617, 'Gunbuster (Top wo Narae)', 'Drama', 613, 7413, 487, 641, true);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (805414, 'Rain or Shine', 'Romance', 2777, 5647, 449, 459, true);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (253919, 'Allegro non troppo', 'Fantasy', 5431, 4291, 744, 530, true);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (539880, 'Loins of Punjab Presents', 'Comedy', 3692, 8431, 981, 622, false);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (456676, 'Ripe', 'Drama', 116, 9220, 336, 712, true);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (185962, 'Big Chill, The', 'Comedy|Drama', 5162, 7454, 630, 29, false);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (435077, 'Daddy Long Legs', 'Comedy|Drama', 786, 9964, 767, 757, true);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (185962, 'Big Chill, The', 'Drama', 5162, 7454, 630, 29, false);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (435077, 'Daddy Long Legs', 'Comedy', 786, 9964, 767, 757, true);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (370245, 'I Never Sang for My Father', 'Drama', 1990, 9270, 490, 767, false);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (936178, 'City, The (Ciudad, La)', 'Drama', 7777, 9325, 856, 881, true);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (815824, 'Ink', 'Action|Fantasy|Sci-Fi', 4309, 7914, 248, 76, false);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (580952, 'Super', 'Action|Comedy|Drama', 6415, 5013, 468, 54, false);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (192399, 'Forever Young', 'Drama|Romance|Sci-Fi', 3669, 9080, 300, 683, false);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (651756, 'Electric Horseman, The', 'Comedy|Western', 8584, 1161, 579, 720, true);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (815824, 'Ink', 'Sci-Fi', 4309, 7914, 248, 76, false);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (580952, 'Super', 'Drama', 6415, 5013, 468, 54, false);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (192399, 'Forever Young', 'Sci-Fi', 3669, 9080, 300, 683, false);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (651756, 'Electric Horseman, The', 'Western', 8584, 1161, 579, 720, true);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (942610, 'Earth Days', 'Documentary', 4936, 2150, 669, 328, true);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (660413, 'Snowbeast', 'Horror', 6451, 3046, 452, 504, false);
-insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (831069, 'Chapter Two', 'Comedy|Drama|Romance', 289, 7661, 188, 459, false);
+insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (831069, 'Chapter Two', 'Romance', 289, 7661, 188, 459, false);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (843580, 'Hesher', 'Drama', 5644, 3041, 476, 950, false);
 insert into Book (ISBN, title, genre, numPages, price, cost, stock, display) values (153822, 'Story of Film: An Odyssey, The', 'Documentary', 7551, 9986, 749, 121, false);
 

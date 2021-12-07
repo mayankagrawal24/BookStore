@@ -13,15 +13,19 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.set("trust proxy", 1); // trust first proxy
 app.use(
   session({
+    store: new (require('connect-pg-simple')(session))({
+      // Insert connect-pg-simple options here
+    }),
     secret: "comp 3005",
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 10 * 60000,
+      maxAge: 20 * 60 * 1000,
       httpOnly: false,
     },
   })
 );
+
 
 //connection to postgres database
 const { Client } = require("pg");

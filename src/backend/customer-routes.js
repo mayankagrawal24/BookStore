@@ -12,7 +12,7 @@ module.exports = function (app, client) {
       if (user.type == "customer") {
         res.render("customerHome.ejs", { req });
       } else if (user.type == "owner") {
-        res.render("ownerHome.ejs", { req });
+        res.render("ownerHome.ejs", { req, report: [] });
       }
     }
   });
@@ -272,7 +272,7 @@ module.exports = function (app, client) {
       let { bStreet, bStreetNumber, bPostalCode, bProvince, bCountry } =
         req.body;
       var text =
-        "INSERT INTO Address(street, streetNumber, postalCode, province, country) VALUES($1, $2, $3, $4, $5) RETURNING addressID";
+        "INSERT INTO Address(street, streetNumber, postalCode, province, country) VALUES($1, $2, $3, $4, $5) RETURNING addressid";
       values = [
         bStreet,
         parseInt(bStreetNumber),
@@ -289,7 +289,7 @@ module.exports = function (app, client) {
       let { sStreet, sStreetNumber, sPostalCode, sProvince, sCountry } =
         req.body;
       text =
-        "INSERT INTO Address(street, streetNumber, postalCode, province, country) VALUES($1, $2, $3, $4, $5) RETURNING addressID";
+        "INSERT INTO Address(street, streetNumber, postalCode, province, country) VALUES($1, $2, $3, $4, $5) RETURNING addressid";
       values = [
         sStreet,
         parseInt(sStreetNumber),
@@ -300,7 +300,7 @@ module.exports = function (app, client) {
       qe = await client
         .query(text, values)
         .catch((e) => console.error(e.stack));
-      letshippingAddressID = qe.rows[0].addressid;
+      let shippingAddressID = qe.rows[0].addressid;
 
       console.log("ADDRESS IDS:", billingAddressID, shippingAddressID);
 

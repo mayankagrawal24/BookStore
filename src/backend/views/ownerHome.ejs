@@ -1,5 +1,6 @@
-<h1> HI I AM THE FUCKING OWNER</h1>
-
-<p> <%= req.session ? req.session.email  : none%> </p>
-
 <%- include('partials/ownerNav.ejs') %>
+
+<p> Welcome <%= req.session ? req.session.name  : none%>!</p>
+
+
+<%- include('partials/ownerReport.ejs', {report}) %>
