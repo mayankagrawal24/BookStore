@@ -57,7 +57,8 @@ create table Book (
 	price int NOT NULL,
 	cost int NOT NULL,
 	stock int DEFAULT 0,
-	display boolean DEFAULT TRUE
+	display boolean DEFAULT TRUE, 
+	publisherCut int DEFAULT 5
 );
 create table SoldBooks (
 	quantity int check(quantity > 0),
