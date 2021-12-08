@@ -1,3 +1,9 @@
+<% if (userType == "customer") { %>
+  <%- include('partials/customerNav.ejs') %>
+<% } else { %>
+  <%- include('partials/ownerNav.ejs') %>
+<% } %>
+
 <form method="post" action="/createBook">
   Create a book
   <p>
@@ -30,7 +36,6 @@
     <label>Stock:</label>
     <input type="number" name="stock" />
   </p>
-  <p></p>
   <p>
     <label>Names of authors (seperate by comma):</label>
     <input type="text" name="names" />
@@ -42,6 +47,10 @@
       <option value=<%= pub.publisherid %>> <%= pub.name %> </option>
     <% }); %> 
   </select>
+  <p>
+    <label>Publisher Cut (%):</label>
+    <input type="number" name="publisherCut" />
+  </p>
 
   <p>
     <label>Display in collection?:</label>

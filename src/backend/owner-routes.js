@@ -9,11 +9,18 @@ module.exports = function (app, client) {
 
   // VIEW to create a book
   app.get("/createBook", async (req, res) => {
+    userType = req.session?.user ? req.session.user.type : "unauthorized";
+    if (userType == "unauthorized") {
+      res.redirect("/");
+    } else if (userType == "customer") {
+      backURL = req.header("Referer") || "/";
+      res.redirect(backURL);
+    }
     var publisherQuery = "Select name, publisherID from Publisher";
     var publishers = await client.query(publisherQuery);
     publishers = publishers.rows;
     console.log(publishers);
-    res.render("createBook.ejs", { publishers });
+    res.render("createBook.ejs", { publishers, userType});
   });
 
   // POST endpoint to add book to Book table (adds to the Book table, add multiple authors at the same time)
@@ -30,10 +37,11 @@ module.exports = function (app, client) {
       display,
       names,
       publisherList,
+      publisherCut
     } = req.body;
     console.log(req.body);
     var text =
-      "INSERT INTO BOOK(ISBN, title, genre, numPages, price, cost, stock, display) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
+      "INSERT INTO BOOK(ISBN, title, genre, numPages, price, cost, stock, display, publisherCut) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)";
     values = [
       ISBN,
       title,
@@ -43,6 +51,7 @@ module.exports = function (app, client) {
       Math.floor(parseFloat(cost) * 100),
       stock,
       display,
+      publisherCut
     ];
     console.log(values);
     var qe = await client
@@ -101,8 +110,16 @@ module.exports = function (app, client) {
     });
 
   // VIEW to create a publisher
-  app.get("/createPublisher", (req, res) => {
-     res.render("createpublisher.ejs", { req });
+  app.get("/createPublisher", urlencodedParser, (req, res) => {
+    userType = req.session?.user ? req.session.user.type : "unauthorized";
+    if (userType == "unauthorized") {
+      res.redirect("/");
+    } else if (userType == "customer") {
+      backURL = req.header("Referer") || "/";
+      res.redirect(backURL);
+    }
+
+    res.render("createpublisher.ejs", { req, userType });
   });
 
   // POST add publisher info, (adds to publisher table and phone table and address)
@@ -182,6 +199,10 @@ module.exports = function (app, client) {
     
   });
 
+  app.get("/report", function(req, res) {
+    res.render("partials/ownerReport.ejs", { req, report: [] });
+  });
+
   //post endpoint to put in an order for a book
   app.post("/report", urlencodedParser, async function (req, res) {
 
@@ -190,42 +211,79 @@ module.exports = function (app, client) {
     let endDate = req.body.date_end;
 
     console.log(startDate, endDate)
+    values = [startDate, endDate]
 
     text = ""
 
     switch (reportType) {
       case 'Book':
         text = 
-            "SELECT isbn, title, sum(quantity) as qty, quantity * price as total FROM OrdersView GROUP BY isbn, title, total";
+            "SELECT isbn, title, sum(quantity) as qty, sum(quantity) as qty, sum(quantity * price) as total_price, sum(quantity * cost) as total_cost FROM OrdersView WHERE date >= $1::date AND date <= $2::date GROUP BY isbn, title";
         break;
 
       case 'Author':
         text = 
-            "SELECT name, sum(quantity) as qty, quantity * price as total FROM OrdersView GROUP BY name, total";
+            "SELECT name, sum(quantity) as qty, sum(quantity) as qty, sum(quantity * price) as total_price, sum(quantity * cost) as total_cost FROM OrdersView WHERE date >= $1::date AND date <= $2::date GROUP BY name";
         break;
 
       case 'Genre':
         text = 
-            "SELECT genre, sum(quantity) as qty, quantity * price as total FROM OrdersView GROUP BY genre, total";
+            "SELECT genre, sum(quantity) as qty, sum(quantity) as qty, sum(quantity * price) as total_price, sum(quantity * cost) as total_cost FROM OrdersView WHERE date >= $1::date AND date <= $2::date GROUP BY genre";
         break;
 
       default:
         text = 
-            "SELECT isbn, title, sum(quantity) as qty, quantity * price as total FROM OrdersView GROUP BY isbn, title, total";
+            "SELECT isbn, title, sum(quantity) as qty, sum(quantity) as qty, sum(quantity * price) as total_price, sum(quantity * cost) as total_cost FROM OrdersView WHERE date >= $1::date AND date <= $2::date GROUP BY isbn, title";
         break;
     } 
 
     var qe = await client
-    .query(text)
+    .query(text, values)
     .catch((e) => console.error(e.stack));
   
-    console.log(qe?.rows);
 
-    if (qe.rows.length) {
+    if (qe?.rows.length > 0) {
       qe.rows[0]['reportType'] = reportType
     }
     
-    res.render("ownerHome.ejs", { req, report: qe?.rows });
-
+    
+    res.render("partials/ownerReport.ejs", { req, report: qe?.rows });
   });
+
+    // View to view how much the publishers should be transfered
+    app.get("/publisherPayouts", async (req, res) => {
+      userType = req.session?.user ? req.session.user.type : "unauthorized";
+      if (userType == "unauthorized") {
+        res.redirect("/");
+      } else if (userType == "customer") {
+        backURL = req.header("Referer") || "/";
+        res.redirect(backURL);
+      }
+
+      text = "SELECT * From CustomerOrder natural join SoldBooks natural join Book natural join makes natural join publisher where completed = $1";
+      values = [true];
+      qe = await client
+      .query(text, values)
+      .catch((e) => console.error(e.stack));
+
+      rows = qe.rows;
+      //console.log(rows)
+      publisherCutValues = {}
+      for (const sale of rows) {
+
+        if (publisherCutValues[sale.name] == null) {
+          publisherCutValues[sale.name] = 0;
+        }
+
+        if (sale.publisherCut == null) {
+          sale.publisherCut = 10;
+        }
+
+        publisherCutValues[sale.name] += sale.quantity * sale.price * (sale.publisherCut/100);
+      }
+      console.log(publisherCutValues)
+      console.log(Object.entries(publisherCutValues))
+
+      res.render("publisherPayout.ejs", { userType, publisherVals: Object.entries(publisherCutValues)});
+    });
 };

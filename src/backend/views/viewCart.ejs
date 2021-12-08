@@ -35,7 +35,9 @@
 </table>
 
 <p>Total: $<%= orderTotal  /100 %></p>
-<button><a href="/bsPage">Proceed to Checkout</a></button>
+<% if (orderTotal/100 != 0) { %>
+  <button><a href="/bsPage">Proceed to Checkout</a></button>
+<% } %>
 
 <script>
 

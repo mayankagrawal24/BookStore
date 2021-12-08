@@ -1,0 +1,24 @@
+<% if (userType == "customer") { %>
+  <%- include('partials/customerNav.ejs') %>
+<% } else { %>
+  <%- include('partials/ownerNav.ejs') %>
+<% } %>
+</br>
+
+<table>
+  <tr>
+    <th>Order Number</th>
+    <th>Tracking Number</th>
+    <th>Date</th>
+    <th>Total</th>
+  </tr>
+
+  <% for (var i = 0; i < customerOrders.length; i++) { %>
+  <tr>
+      <td><%= customerOrders[i].customerorderid %></td>
+      <td><%= customerOrders[i].trackingnumber %></td>
+      <td><%= customerOrders[i].date %></td>
+      <td>$<%= customerOrders[i].total/100 %></td>
+  </tr>
+<% } %>
+</table>

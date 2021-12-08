@@ -1,0 +1,21 @@
+<% if (userType == "customer") { %>
+    <%- include('partials/customerNav.ejs') %>
+  <% } else { %>
+    <%- include('partials/ownerNav.ejs') %>
+<% } %>
+
+<h1>Publisher Payouts</h1>
+
+<table>
+    <tr>
+      <th>Publisher</th>
+      <th>Amount Owed</th>
+    </tr>
+  
+    <% for (var i = 0; i < publisherVals.length; i++) { %>
+    <tr>
+        <td><%= publisherVals[i][0] %></td>
+        <td>$<%= (publisherVals[i][1] / 100).toFixed(2)%></td>
+    </tr>
+  <% } %>
+  </table>

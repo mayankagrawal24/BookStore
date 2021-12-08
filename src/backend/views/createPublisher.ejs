@@ -1,3 +1,9 @@
+<% if (userType == "customer") { %>
+  <%- include('partials/customerNav.ejs') %>
+<% } else { %>
+  <%- include('partials/ownerNav.ejs') %>
+<% } %>
+
 <form method="post" action="/createPublisher">
     <br />
     <p>
