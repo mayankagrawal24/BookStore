@@ -55,13 +55,17 @@ CREATE TRIGGER StockSoldBooks
 CREATE OR REPLACE FUNCTION createStoreOrder() 
 RETURNS TRIGGER
 AS $$
+declare o_id int;
 BEGIN
-
- INSERT into StoreOrder(ownerID) VALUES(null) RETURNING orderid;
- INSERT INTO orderedBooks(quantity, orderID, ISBN) VALUES(10, orderid, NEW.ISBN);
- RETURN NEW;
+  IF (NEW.stock <= 9) THEN
+  INSERT into StoreOrder(ownerID) VALUES(null) RETURNING orderid into o_id;
+  INSERT INTO orderedBooks(quantity, orderID, ISBN) VALUES(10, o_id, NEW.ISBN);
+  RETURN NEW;
+  END IF;
+  Return NEW;
 END
 $$ LANGUAGE plpgsql;
+
 
 CREATE TRIGGER orderBooksBelowThreshold
   AFTER update
