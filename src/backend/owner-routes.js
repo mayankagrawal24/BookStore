@@ -161,7 +161,7 @@ module.exports = function (app, client) {
         .query(text, values)
         .catch((e) => console.error(e.stack));
     });
-    res.sendStatus(200);
+    res.redirect("http://localhost:3000/");
   });
 
   //post endpoint to put in an order for a book

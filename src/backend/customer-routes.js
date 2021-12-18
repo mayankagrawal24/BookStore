@@ -138,7 +138,7 @@ module.exports = function (app, client) {
     let customerID = qe.rows[0].customerid;
     console.log("customerid", customerID);
 
-    res.sendStatus(200);
+    res.redirect("http://localhost:3000/");
   });
 
   // POST add books to cart (involve generating an order)
@@ -540,17 +540,19 @@ module.exports = function (app, client) {
     res.render("bsPage.ejs");
   });
 
-  app.get("/checkout", urlencodedParser, async function (req, res) {
+  app.get("/viewCustomerOrder", urlencodedParser, async function (req, res) {
     userType = req.session?.user ? req.session.user.type : "unauthorized";
     if (userType == "unauthorized") {
       res.redirect("/");
     }
 
     let { customerID } = req.session.user;
-    var text =
-      "SELECT * From CustomerOrder natural join SoldBooks natural join Book inner join customer on (CustomerOrder.customerId = Customer.customerId) where customer.customerid = $1 and completed = $2";
+    let { customerOrderID } = req.query;
 
-    values = [customerID, false];
+    var text =
+     "SELECT * From CustomerOrder natural join SoldBooks natural join Book inner join customer on (CustomerOrder.customerId = Customer.customerId) where CustomerOrder.customerorderid = $1";
+
+    values = [customerOrderID];
     var qe = await client
       .query(text, values)
       .catch((e) => console.error(e.stack));
@@ -561,8 +563,9 @@ module.exports = function (app, client) {
       orderTotal += book.quantity * book.price;
     });
 
-    res.render("checkout.ejs", {
+    res.render("viewOrder.ejs", {
       books: qe.rows,
+      customerOrderID: customerOrderID,
       userType: userType,
       orderTotal: orderTotal,
     });

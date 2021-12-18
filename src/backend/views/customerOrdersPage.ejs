@@ -15,10 +15,12 @@
 
   <% for (var i = 0; i < customerOrders.length; i++) { %>
   <tr>
-      <td><%= customerOrders[i].customerorderid %></td>
-      <td><%= customerOrders[i].trackingnumber %></td>
+      <td><a href="http://localhost:3000/viewCustomerOrder?customerOrderID=<%= customerOrders[i].customerorderid %>"><%= customerOrders[i].customerorderid %></td>
+      <td><a href="https://www.canadapost-postescanada.ca/track-reperage/en#/home"><%= customerOrders[i].trackingnumber %></a></td>
       <td><%= customerOrders[i].date %></td>
       <td>$<%= customerOrders[i].total/100 %></td>
   </tr>
 <% } %>
 </table>
+
+<p>Click on any tracking number to go to Canada Post Tracking Page</p>
