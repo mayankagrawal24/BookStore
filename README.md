@@ -20,6 +20,7 @@ PORT=3000
 ```
 5. Set up the DB with the following command (make sure you are in "./src/backend"):
 ```
+npm i
 node setup
 ```
 6. (Optional) Set up the seed file with the following commands
